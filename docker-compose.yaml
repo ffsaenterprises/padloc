@@ -1,33 +1,33 @@
 version: "3.7"
 services:
-    # mongodb:
-    #     image: mongo
-    #     container_name: mongodb
-    #     restart: always
-    #     env_file: .env
-    #     volumes:
-    #         - data:/data/db
-    #     expose:
-    #         - 27017
-    #     # ports:
-    #     #     - 27023:27017
-    #     environment:
-    #         MONGO_INITDB_ROOT_USERNAME: ${PL_DATA_MONGODB_USERNAME}
-    #         MONGO_INITDB_ROOT_PASSWORD: ${PL_DATA_MONGODB_PASSWORD}
+    mongodb:
+        image: mongo
+        container_name: mongodb
+        restart: always
+        env_file: .env
+        volumes:
+            - data:/data/db
+        expose:
+            - 27017
+        ports:
+            - 27023:27017
+        environment:
+           MONGO_INITDB_ROOT_USERNAME: ${PL_DATA_MONGODB_USERNAME}
+           MONGO_INITDB_ROOT_PASSWORD: ${PL_DATA_MONGODB_PASSWORD}
     server:
         image: padloc/server
         build:
             context: .
             dockerfile: Dockerfile-server
-        # depends_on:
-        #     - mongodb
+        depends_on:
+            - mongodb
         env_file: .env
-        # environment:
-        #     PL_DATA_MONGODB_HOST: mongodb
-        #     PL_DATA_MONGODB_PROTOCOL: mongodb
-        #     PL_DATA_MONGODB_PORT: 27017
-        #     PL_DATA_ATTACHMENTS_BACKEND: fs
-        #     PL_DATA_ATTACHMENTS_DIR: /attachments
+        environment:
+            PL_DATA_MONGODB_HOST: mongodb
+            PL_DATA_MONGODB_PROTOCOL: mongodb
+            PL_DATA_MONGODB_PORT: 27017
+            PL_DATA_ATTACHMENTS_BACKEND: fs
+            PL_DATA_ATTACHMENTS_DIR: /attachments
         environment:
             - PL_ASSETS_DIR=/assets
         expose:
@@ -64,7 +64,7 @@ services:
         restart: always
         volumes:
             - pwa:/pwa
-            # - logs:/var/log
+            - logs:/var/log
             - /var/www/certbot:/certbot
             - ./nginx/nginx.conf:/etc/nginx/nginx.conf
             - ${PL_SSL_CERT}:/ssl/cert
